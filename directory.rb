@@ -1,11 +1,11 @@
 def input_students
-    puts "Please enter the names of the students"
-    puts "To finish, just hit return twice"
+    puts "Please enter the names of the students."
+    puts "To finish, just hit return twice."
     students = []
     name = gets.chomp
     while !name.empty? do
         students << {name: name, cohort: :november} 
-        puts "Now we have #{students.count} students"
+        puts "Now we have #{students.count} students!"
         name = gets.chomp
     end
     students
@@ -13,34 +13,27 @@ end
 
 def print_header
     puts "The students of Villians Academy"
-    puts "-------------"
-end
-
-def print_specific_letter
-    loop do
-        puts "Would you like only print students beginning with a specific letter? y/n"
-        ui = gets.chomp
-        if ui.downcase == "n"
-            return 0
-        elsif ui.downcase == "y"
-            puts "Please input the letter"
-            ui_letter = gets.chomp
-            return ui_letter
-        else
-            puts "Input not recognized"
-        end
-    end
+    puts "--------------------------------"
 end
 
 def print(students)
-    if @temp == 0
-        students.each_with_index do |student, index|
-            puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-        end
-    else
-        students.each_with_index do |student, index|
-            puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name].chr == @temp 
-        end
+    students.each_with_index do |student, index|
+        puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    end
+end
+
+def print_specific_letter(students)
+    puts "Please enter the letter."
+    psl_ui = gets.chomp
+    print_header
+    students.each_with_index do |student, index|
+    puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name].chr == psl_ui
+    end
+end
+
+def print_shortmode(students)
+    students.each_with_index do |student, index|
+    puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name].length < 12
     end
 end
 
@@ -48,8 +41,28 @@ def print_footer(students)
     puts "Overall, we have #{students.count} great students"
 end
 
-students = input_students
-@temp = print_specific_letter
-print_header
-print(students)
-print_footer(students)
+def prog_runner
+    puts "Hi there, weclome to Villians Academy! Please populate our student list!"
+    students = input_students
+    puts "We have many available functions - please choose from the list below!"
+    puts "
+    1 - Print all students.
+    2 - Print only students with names beginning with a specific letter.
+    3 - Print only students with names shorter than 12 characters."
+    pr_ui = gets.chomp
+    case pr_ui
+    when "1"
+        print_header
+        print(students)
+        print_footer(students)
+    when "2"
+        print_specific_letter(students)
+        print_footer(students)
+    when "3"
+        print_header
+        print_shortmode(students)
+        print_footer(students)
+    end
+end
+
+prog_runner
