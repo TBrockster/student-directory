@@ -1,3 +1,4 @@
+require 'csv'
 @students = []
 
 def input_students
@@ -43,15 +44,13 @@ def print_students_list
     end
 end
 
-=begin
-def print_students_list
-    tracker = 0
-    while tracker < @students.length
-        puts "#{tracker + 1}. #{@students[tracker][:name]} (#{@students[tracker][:cohort]} cohort)".center(50)
-        tracker += 1
-    end
-end
-=end
+# def print_students_list
+#     tracker = 0
+#     while tracker < @students.length
+#         puts "#{tracker + 1}. #{@students[tracker][:name]} (#{@students[tracker][:cohort]} cohort)".center(50)
+#         tracker += 1
+#     end
+# end
 
 def print_cohort
     cohorts = []
@@ -92,27 +91,47 @@ def print_footer
     end
 end
 
-def save_students
-    file = File.open("students.csv", "w" )
-    @students.each do |student|
-        student_data = [student[:name], student[:cohort]]
-        csv_line = student_data.join(",")
-        file.puts csv_line
+# def save_students(filename = "students.csv")
+#     File::open(filename, "w" ) do |f|
+#         @students.each do |student|
+#             student_data = [student[:name], student[:cohort]]
+#             csv_line = student_data.join(",")
+#             f.puts csv_line
+#         end
+#     end
+#     puts "File Saved"
+# end
+
+def save_students(filename = "students.csv")
+    CSV.open(filename, "w") do |csv|
+        @students.each do |student|
+            csv << [student[:name], student[:cohort]]
+        end
     end
-    file.close
+    puts "File Saved"
 end
 
+# def load_students(filename = "students.csv")
+#   File::open(filename, "r") do |f|
+#   f.readlines.each do |line| 
+#   name, cohort = line.chomp.split(',')
+#     @students << {name: name, cohort: cohort.to_sym}
+#   end
+#   puts "File Loaded"
+# end
+
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-  name, cohort = line.chomp.split(',')
+  f = CSV.read(filename)
+  f.each do |a, b| 
+  name, cohort = a, b
     @students << {name: name, cohort: cohort.to_sym}
   end
-  file.close
+  puts "File Loaded"
 end
 
 def try_load_students
   filename = ARGV.first
+  load_students if filename.nil?
   return if filename.nil?
   if File.exists?(filename)
     load_students(filename)
@@ -155,9 +174,13 @@ def choice(pr_ui)
             print_cohort
             print_footer
         when "6"
-            save_students
-        when "7"
-            load_students
+            puts "Please enter a file name to save to, or enter to use default."
+            save_ui = gets.chomp
+            save_ui.empty? ? save_students : save_students(save_ui)
+            when "7" 
+            puts "Please enter a file name to load from, or enter to use default."
+            load_ui = gets.chomp
+            load_ui.empty? ? load_students : save_students(load_ui)
         when "8"
             puts "Goodbye!"
             exit
@@ -167,8 +190,8 @@ def choice(pr_ui)
 end
 
 def prog_runner
+    try_load_students
     loop do
-        try_load_students
         print_menu
         choice(STDIN.gets.chomp)
     end
