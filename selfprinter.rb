@@ -1,5 +1,5 @@
 def selfload
-    File::open("selfprinter.rb", "r") do |f|
+    File::open(__FILE__, "r") do |f|
         f.readlines.each do |line|
             puts line
         end
