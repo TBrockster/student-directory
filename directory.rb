@@ -101,6 +101,16 @@ def save_students
     file.close
 end
 
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+  name, cohort = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+end
+
+
 def print_menu
     puts "We have many available functions - please choose from the list below!"
     puts "
@@ -109,8 +119,9 @@ def print_menu
     3 - Print only students with names beginning with a specific letter.
     4 - Print only students with names shorter than 12 characters.
     5 - Print only students in a specific cohort.
-    6 - Save student list
-    7 - Exit this directory."
+    6 - Save student list.
+    7 - Load student list.
+    8 - Exit this directory."
 end
 
 def choice(pr_ui)
@@ -134,6 +145,8 @@ def choice(pr_ui)
         when "6"
             save_students
         when "7"
+            load_students
+        when "8"
             puts "Goodbye!"
             exit
         else
