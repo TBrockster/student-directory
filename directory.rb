@@ -6,7 +6,11 @@ def input_students
     name = gets.chomp
     while !name.empty? do
         students << {name: name} 
-        puts "Now we have #{students.count} students!"
+        if students.count == 1
+            puts "Now we have #{students.count} student!"
+        else
+            puts "Now we have #{students.count} students!"
+        end
         puts "Please enter #{students[tracker][:name]}'s cohort, or hit return for default (November)"
         cohort = gets.chomp
         students[tracker][:cohort] = cohort.downcase.to_sym
@@ -34,7 +38,7 @@ end
 
 def print(students)
     students.each_with_index do |student, index|
-        puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50)
+        puts "#{index + 1}. #{student[:name]} - #{student[:cohort].capitalize} Cohort - Hobbies: #{student[:hobbies]} - Country of Birth: #{student[:birth_country]} - Height: #{student[:height]}"
     end
 end
 
@@ -80,7 +84,11 @@ def print_shortmode(students)
 end
 
 def print_footer(students)
-    puts "Overall, we have #{students.count} great students".center(50)
+    if students.count == 1
+        puts "Overall, we have #{students.count} great student".center(50)
+    else
+        puts "Overall, we have #{students.count} great students".center(50)
+    end
 end
 
 def prog_runner
