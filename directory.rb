@@ -91,6 +91,16 @@ def print_footer
     end
 end
 
+def save_students
+    file = File.open("students.csv", "w" )
+    @students.each do |student|
+        student_data = [student[:name], student[:cohort]]
+        csv_line = student_data.join(",")
+        file.puts csv_line
+    end
+    file.close
+end
+
 def print_menu
     puts "We have many available functions - please choose from the list below!"
     puts "
@@ -99,7 +109,8 @@ def print_menu
     3 - Print only students with names beginning with a specific letter.
     4 - Print only students with names shorter than 12 characters.
     5 - Print only students in a specific cohort.
-    6 - Exit this directory."
+    6 - Save student list
+    7 - Exit this directory."
 end
 
 def choice(pr_ui)
@@ -121,6 +132,8 @@ def choice(pr_ui)
             print_cohort
             print_footer
         when "6"
+            save_students
+        when "7"
             puts "Goodbye!"
             exit
         else
