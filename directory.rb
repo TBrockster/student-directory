@@ -4,7 +4,8 @@ def input_students
     puts "Please enter the name of the first student."
     puts "To finish, just hit return twice."
     tracker = 0
-    name = gets.strip
+    tracker += @students.count
+    name = STDIN.gets.strip
     while !name.empty? do
         @students << {name: name}
         if @students.count == 1
@@ -13,21 +14,21 @@ def input_students
             puts "Now we have #{@students.count} students!"
         end
         puts "Please enter #{@students[tracker][:name]}'s cohort, or hit return for default (November)"
-        cohort = gets.chomp
+        cohort = STDIN.gets.chomp
         @students[tracker][:cohort] = cohort.downcase.to_sym
         @students[tracker][:cohort] = :november if cohort.empty?
         puts "Please enter any hobbies #{@students[tracker][:name]} has."
-        hobby = gets.chomp
+        hobby = STDIN.gets.chomp
         @students[tracker][:hobbies] = hobby
         puts "Please enter #{@students[tracker][:name]}'s country of birth."
-        country = gets.chomp
+        country = STDIN.gets.chomp
         @students[tracker][:birth_country] = country
         puts "Please enter #{@students[tracker][:name]}'s height."
-        height = gets.chomp
+        height = STDIN.gets.chomp
         @students[tracker][:height] = height
         tracker += 1
         puts "Please enter the name of the next student, or press enter to finish."
-        name = gets.chomp
+        name = STDIN.gets.chomp
     end
 end
 
@@ -38,7 +39,7 @@ end
 
 def print_students_list
     @students.each_with_index do |student, index|
-        puts "#{index + 1}. #{student[:name]} - #{student[:cohort].capitalize} Cohort - Hobbies: #{student[:hobbies]} - Country of Birth: #{student[:birth_country]} - Height: #{student[:height]}"
+        puts "#{index + 1}. #{student[:name]} - #{student[:cohort].capitalize if student[:cohort] != nil} Cohort - Hobbies: #{student[:hobbies]} - Country of Birth: #{student[:birth_country]} - Height: #{student[:height]}"
     end
 end
 
@@ -61,7 +62,7 @@ def print_cohort
     cohorts_str = cohorts.join(", ").to_s
     puts "Please enter the cohort you would like printed"
     puts "We currently have the following cohorts: #{cohorts_str}"
-    ui_cohort = gets.chomp
+    ui_cohort = STDIN.gets.chomp
     print_header
     @students.each_with_index do |student, index|
         puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50) if student[:cohort] == ui_cohort.downcase.to_sym
@@ -70,7 +71,7 @@ end
 
 def print_specific_letter
     puts "Please enter the letter."
-    psl_ui = gets.chomp
+    psl_ui = STDIN.gets.chomp
     print_header
     @students.each_with_index do |student, index|
         puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50) if student[:name].chr.downcase == psl_ui.downcase
@@ -101,8 +102,8 @@ def save_students
     file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
@@ -110,6 +111,17 @@ def load_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
+end
 
 def print_menu
     puts "We have many available functions - please choose from the list below!"
@@ -156,8 +168,9 @@ end
 
 def prog_runner
     loop do
+        try_load_students
         print_menu
-        choice(gets.chomp)
+        choice(STDIN.gets.chomp)
     end
 end
 
