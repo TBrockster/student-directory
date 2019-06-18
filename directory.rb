@@ -5,8 +5,12 @@ def input_students
     tracker = 0
     name = gets.chomp
     while !name.empty? do
-        students << {name: name, cohort: :november} 
+        students << {name: name} 
         puts "Now we have #{students.count} students!"
+        puts "Please enter #{students[tracker][:name]}'s cohort, or hit return for default (November)"
+        cohort = gets.chomp
+        students[tracker][:cohort] = cohort.downcase.to_sym
+        students[tracker][:cohort] = :november if cohort.empty?
         puts "Please enter any hobbies #{students[tracker][:name]} has."
         hobby = gets.chomp
         students[tracker][:hobbies] = hobby
