@@ -48,6 +48,22 @@ def print(students)
 end
 =end
 
+def print_cohort(students)
+    cohorts = []
+    students.each do |student|
+        cohorts << student[:cohort]
+    end
+    cohorts.uniq!
+    cohorts_str = cohorts.join(", ").to_s
+    puts "Please enter the cohort you would like printed"
+    puts "We currently have the following cohorts: #{cohorts_str}"
+    ui_cohort = gets.chomp
+    print_header
+    students.each_with_index do |student, index|
+        puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50) if student[:cohort] == ui_cohort.downcase.to_sym
+    end
+end
+
 def print_specific_letter(students)
     puts "Please enter the letter."
     psl_ui = gets.chomp
@@ -74,7 +90,8 @@ def prog_runner
     puts "
     1 - Print all students.
     2 - Print only students with names beginning with a specific letter.
-    3 - Print only students with names shorter than 12 characters."
+    3 - Print only students with names shorter than 12 characters.
+    4 - Print only students in a specific cohort"
     pr_ui = gets.chomp
     case pr_ui
     when "1"
@@ -87,6 +104,9 @@ def prog_runner
     when "3"
         print_header
         print_shortmode(students)
+        print_footer(students)
+    when "4"
+        print_cohort(students)
         print_footer(students)
     end
 end
